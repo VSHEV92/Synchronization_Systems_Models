@@ -5,7 +5,7 @@ clc; clear; close all
 %% Полоса нормирована к частоте дискретизации.
 %% Усиление фазового детектора и NCO равны 1.
 
-%% Литература: Gardner Phaselock Technique
+%% Литература: Gardner Phaselock Technique p.11
 
 
 %% Зависимость от нормированной шумовой полосы
