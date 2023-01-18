@@ -7,8 +7,10 @@ clc; clear; close all;
 %% Формула: Tp = (delta_w)^2 / (2 * ksi * wn^3) 
 %% При ksi = sqrt(2): Tp = 4.2 * (delta_f)^2 / BL^3
 %% Коэффициент усиления (Kg) и амплитуда сигнала NCO равны 1.
-
 %% Литература: Gardner Phaselock Technique p.75
+
+%% Другая формула: (pi^2/16)*(delta_w)^2 / (ksi * wn^3) 
+%% Best PLL Design, Simulation and Applications. p. 74
 
 Ts = 1e-3;                % шаг дискретизации
 Tsim = 50;                 % время моделирования

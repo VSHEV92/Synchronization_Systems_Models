@@ -1,20 +1,17 @@
 %% https://github.com/VSHEV92/Synchronization_Systems_Models
 clc; clear; close all; 
 
-%% Упрощенная модель фапч с sawtooth детектором (встречается при использовании арктангенса).
+%% Упрощенная модель фапч с треугольным детектором детектором.
 %% Коэффициент усиления и амплитуда сигнала NCO равны 1.
 
 %% Литература: 
 %% Общая модель: Gardner Phaselock Technique p.30
-%% pull-out range: Venceslav F. Kroupa Phase Lock Loops and Frequency Synthesis p. 132
-%% pull-in time: Venceslav F. Kroupa Phase Lock Loops and Frequency Synthesis p. 141
 
-%% Другие формулы: 
-%% pull-out range: Best PLL Design, Simulation and Applications. p. 76
-%% delta_wpo = 5.78 * wn * (0.5 + ksi);
+%% pull-out range: Best PLL Design, Simulation and Applications. p. 75
+%% delta_wpo = 2.46 * wn * (0.65 + ksi);
 
-%% pull-in time: Best PLL Design, Simulation and Applications. p. 76
-%% Tp = (w_s/wn)^2 / (pi^2) / (ksi*wn); 
+%% pull-in time: Best PLL Design, Simulation and Applications. p. 75
+%% Tp = (w_s/wn)^2 * (4/pi^2) / (ksi*wn); 
 
 
 %% --------------------------------------------------------------------------
@@ -23,13 +20,13 @@ Ts = 1e-3;                % шаг дискретизации
 Tsim = 6;                 % время моделирования
 
 phase0_s = 30;            % начальная фаза входного сигнала (градусы)
-w_s = 200;                % значение частоты сигнала
+w_s = 100;                % значение частоты сигнала
 w_s_change_time = 3;      % момент времени изменения частоты сигнала
-w_s_new = 60;             % новое значение частоты сигнала
+w_s_new = 175;             % новое значение частоты сигнала
 
 ksi = sqrt(2);            % декремент затухания 
 BL = 10;                  % шумовая полоса
-PD_max = pi;              % максимальное значение на выходе детектора
+PD_max = pi/2;            % максимальное значение на выходе детектора
 Kd = 1;                   % коэффициент усиления фазового детектора
 
 %% --------------------------------------------------------------------------
@@ -45,10 +42,10 @@ Ki = 4*BL_n^2 / (ksi + 0.25/ksi)^2 / Kd;        % усиление интегр�
 
 %% --------------------------------------------------------------------------
 %% Расчет характеристик фапч 
-wn = 2 * BL / (ksi + 0.25/ksi);                     % резонансная частота (рад/с)
-delta_wpo = pi * wn * 1.83 * (0.53 + ksi);          % ожидаемый pull-out range (рад/с)
-wL = PD_max * Kd * (Kp / Ts);                       % lock-in range (рад/c) 
-Tp = (w_s/wn)^2 * (1.5/pi^2) / (2*ksi*wn);          % pull-in time 
+wn = 2 * BL / (ksi + 0.25/ksi);                 % резонансная частота (рад/с)
+delta_wpo = 2.46 * wn * (0.65 + ksi);           % ожидаемый pull-out range (рад/с)
+wL = PD_max * Kd * (Kp / Ts);                   % lock-in range (рад/c) 
+Tp = (w_s/wn)^2 * (4/pi^2) / (ksi*wn);          % pull-in time 
 
 %% --------------------------------------------------------------------------
 %% входной сигнал
@@ -75,8 +72,17 @@ ki_out_last = 0;
 for n = 2:Nsamp
     % вычисление ошибки
     phase_diff = input_phase(n) - nco_phase(n-1);
-    sawtooth_wrap = mod(phase_diff + PD_max, 2*PD_max) - PD_max;
-    err(n) = Kd * sawtooth_wrap;
+    sawtooth_wrap = mod(phase_diff + 2*PD_max, 4*PD_max) - 2*PD_max;
+    
+    if sawtooth_wrap > PD_max
+        triangle_correction = 2*PD_max - sawtooth_wrap;
+    elseif sawtooth_wrap < -PD_max
+        triangle_correction = -2*PD_max - sawtooth_wrap;
+    else
+        triangle_correction = sawtooth_wrap;
+    endif
+
+    err(n) = Kd * triangle_correction;
 
     % петлевой фильтр
     kp_out = Kp * err(n);
