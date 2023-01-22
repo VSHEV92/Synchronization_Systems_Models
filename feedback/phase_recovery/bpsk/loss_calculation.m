@@ -2,58 +2,7 @@
 clc; clear; close all; 
 
 %% Моделирование потерь в отношении сингнал/шум из-за неидеальной синхронизации.
-
-%% -------------------------------------------------------------------------------------
-%% функция, реализующая фапч
-function [rx_samples, nco_phase] = power_2_sync (
-        tx_samples,  % отсчеты сигнала 
-        BL_n,        % нормированная шумовая полоса в процентах
-        ksi          % коэффициент демпфирования
-    )
-
-    Nsamp = length(tx_samples); % общее число отсчетов в разах
-    
-    BL_n = BL_n / 100;  % нормированная шумовая полоса
-    PD_max = pi;        % максимальное значение на выходе детектора
-    Kd = 1;             % коэффициент усиления фазового детектора
-
-    %% Расчет характеристик фапч 
-    Kp = 4*ksi*BL_n / (ksi + 0.25/ksi) / Kd;        % усиление пропорциональной ветви
-    Ki = 4*BL_n^2 / (ksi + 0.25/ksi)^2 / Kd;        % усиление интегрирующей ветви
-
-    %% ошибка по фазе, выход фильтра и фаза NCO
-    detector_input = zeros(1, Nsamp);
-    err = zeros(1, Nsamp);
-    nco_phase = zeros(1, Nsamp);
-    nco_value = ones(1, Nsamp);
-    nco_value = ones(1, Nsamp);
-    loop_filter_out = zeros(1, Nsamp);
-
-    %% прошлое значение в интегрирующей ветви
-    ki_out_last = 0;
-
-    for n = 2:Nsamp
-        %% возведение входного сигнала в квадрат
-        detector_input(n) = tx_samples(n)^2;
-
-        %% фазовый детектор
-        err(n) = Kd * angle(detector_input(n) * conj(nco_value(n-1)));
-
-        % петлевой фильтр
-        kp_out = Kp * err(n);
-        ki_out = Ki * err(n) + ki_out_last;
-        loop_filter_out(n) = kp_out + ki_out;
-        ki_out_last = ki_out;
-
-        % вычисление фазы NCO
-        nco_phase(n) = nco_phase(n-1) + loop_filter_out(n);
-        nco_value(n) = exp(1*i*nco_phase(n));
-    endfor
-
-    %% синзронизация входного сигнала
-    rx_samples = tx_samples .* exp(-1/2*i*nco_phase);
-endfunction
-
+%% Восстновление несущей с помощью возведения в квадрат
 %% --------------------------------------------------------------------------
 %% параметры bpsk сигнала
 sample_time = 1e-3;
@@ -88,6 +37,7 @@ for SNR = SNR_list
 
     %% синхронизация сигнала
     [rx_samples, nco_phase] = power_2_sync (tx_samples, BL_n, ksi);
+    %[rx_samples, nco_phase] = costas_sync (tx_samples, BL_n, ksi);
 
     %% рассчет СКО фазовой ошибки в градусах
     phase_mse = [phase_mse sqrt(var(nco_phase)) / pi * 180];
