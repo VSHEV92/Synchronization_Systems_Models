@@ -38,7 +38,8 @@ for SNR = SNR_list
     %% синхронизация сигнала
     %[rx_samples, nco_phase] = power_2_sync (tx_samples, BL_n, ksi);
     %[rx_samples, nco_phase] = costas_sync (tx_samples, BL_n, ksi);
-    [rx_samples, nco_phase] = remodulation_sync (tx_samples, BL_n, ksi);
+    %[rx_samples, nco_phase] = remodulation_sync (tx_samples, BL_n, ksi);
+    [rx_samples, nco_phase] = sign_of_real_sync (tx_samples, BL_n, ksi);
 
     %% рассчет СКО фазовой ошибки в градусах
     phase_mse = [phase_mse sqrt(var(nco_phase)) / pi * 180];
