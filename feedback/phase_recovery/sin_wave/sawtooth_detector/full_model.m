@@ -58,7 +58,7 @@ input_phase = zeros(1,Nsamp);
 input_phase(1) = phase0_s;
 for k = 2:Nsamp
     input_phase(k) = input_phase(k-1) + Ts * input_w(k-1);
-endfor
+end
 
 % входной гармонический сигнал
 noise = randn(1,Nsamp)*sqrt(noise_power/2) + 1i*randn(1,Nsamp)*sqrt(noise_power/2);
@@ -88,7 +88,7 @@ for n = 2:Nsamp
     % вычисление фазы NCO
     nco_phase(n) = nco_phase(n-1) + loop_filter_out(n) + w0_nco*Ts;
     nco_value(n) = exp(1*i*nco_phase(n));
-endfor
+end
 
 %% ----------------------------------------------------
 %% вывод рассчетных значений

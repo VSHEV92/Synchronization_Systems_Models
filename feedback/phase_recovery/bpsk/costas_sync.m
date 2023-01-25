@@ -1,9 +1,9 @@
 %% -------------------------------------------------------------------------------------
 %% функция, реализующая фапч для приема bpsk с помощью схемы костаса
-function [rx_samples, nco_phase] = costas_sync (
-        tx_samples,  % отсчеты сигнала 
-        BL_n,        % нормированная шумовая полоса в процентах
-        ksi          % коэффициент демпфирования
+function [rx_samples, nco_phase] = costas_sync (...
+        tx_samples,...  % отсчеты сигнала 
+        BL_n,...        % нормированная шумовая полоса в процентах
+        ksi...          % коэффициент демпфирования
     )
 
     Nsamp = length(tx_samples); % общее число отсчетов в разах
@@ -19,7 +19,6 @@ function [rx_samples, nco_phase] = costas_sync (
     detector_input = zeros(1, Nsamp);
     err = zeros(1, Nsamp);
     nco_phase = zeros(1, Nsamp);
-    nco_value = ones(1, Nsamp);
     nco_value = ones(1, Nsamp);
     loop_filter_out = zeros(1, Nsamp);
 
@@ -41,9 +40,9 @@ function [rx_samples, nco_phase] = costas_sync (
 
         % вычисление фазы NCO
         nco_phase(n) = nco_phase(n-1) + loop_filter_out(n);
-        nco_value(n) = exp(1*i*nco_phase(n));
-    endfor
+        nco_value(n) = exp(1i*nco_phase(n));
+    end
 
     %% синзронизация входного сигнала
     rx_samples = detector_input;
-endfunction
+end

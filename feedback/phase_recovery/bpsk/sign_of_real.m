@@ -36,13 +36,13 @@ Tp = (freq_offset)^2 / (2*ksi*wn^3);          % pull-in time
 
 %% --------------------------------------------------------------------------
 %% генерация входного сигнала
-[tx_bits, tx_samples] = bpsk_generator(
-        sample_time,            % шаг дискретизации
-        symbols_number,         % число передаваемых символов
-        samples_ber_symbol,     % число отсчетов на символ
-        freq_offset,            % расстройка по несущей частоте (рад/c)
-        phase_offset,           % расстройка по фазе (градусы)
-        SNR                     % отношение сигнал/шум (Eb/N0)
+[tx_bits, tx_samples] = bpsk_generator(...
+        sample_time,...           % шаг дискретизации
+        symbols_number,...        % число передаваемых символов
+        samples_ber_symbol,...    % число отсчетов на символ
+        freq_offset,...           % расстройка по несущей частоте (рад/c)
+        phase_offset,...          % расстройка по фазе (градусы)
+        SNR...                    % отношение сигнал/шум (Eb/N0)
     );
 
 %% --------------------------------------------------------------------------
@@ -51,7 +51,6 @@ Tp = (freq_offset)^2 / (2*ksi*wn^3);          % pull-in time
 detector_input = zeros(1, Nsamp);
 err = zeros(1, Nsamp);
 nco_phase = zeros(1, Nsamp);
-nco_value = ones(1, Nsamp);
 nco_value = ones(1, Nsamp);
 loop_filter_out = zeros(1, Nsamp);
 
@@ -73,8 +72,8 @@ for n = 2:Nsamp
 
     % вычисление фазы NCO
     nco_phase(n) = nco_phase(n-1) + loop_filter_out(n);
-    nco_value(n) = exp(1*i*nco_phase(n));
-endfor
+    nco_value(n) = exp(1i*nco_phase(n));
+end
 
 %% синзронизация входного сигнала
 rx_samples = detector_input;

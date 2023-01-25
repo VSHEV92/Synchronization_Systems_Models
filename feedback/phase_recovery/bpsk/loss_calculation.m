@@ -26,13 +26,13 @@ for SNR = SNR_list
     disp(['SNR = ', num2str(SNR)]);
 
     %% генерация входного сигнала
-    [tx_bits, tx_samples] = bpsk_generator(
-            sample_time,            % шаг дискретизации
-            symbols_number,         % число передаваемых символов
-            samples_ber_symbol,     % число отсчетов на символ
-            freq_offset,            % расстройка по несущей частоте (рад/c)
-            phase_offset,           % расстройка по фазе (градусы)
-            SNR                     % отношение сигнал/шум (Eb/N0)
+    [tx_bits, tx_samples] = bpsk_generator(...
+            sample_time,...            % шаг дискретизации
+            symbols_number,...         % число передаваемых символов
+            samples_ber_symbol,...     % число отсчетов на символ
+            freq_offset,...            % расстройка по несущей частоте (рад/c)
+            phase_offset,...           % расстройка по фазе (градусы)
+            SNR...                     % отношение сигнал/шум (Eb/N0)
         );
 
     %% синхронизация сигнала
@@ -47,7 +47,7 @@ for SNR = SNR_list
     %% демодуляция и подсчет вероятности ошибки
     rx_bits = real(rx_samples) > 0;
     P_err = [P_err sum(tx_bits ~= rx_bits)/symbols_number]; 
-endfor
+end
 
 
 figure(1)

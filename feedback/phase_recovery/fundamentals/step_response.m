@@ -52,12 +52,12 @@ for ksi = ksi_list
 
         % вычисление фазы NCO
         nco_phase(n) = nco_phase(n-1) + loop_filter_out(n); 
-    endfor
+    end
 
     hold on;
     plot(Time, nco_phase); grid on;
     xlabel('time'); ylabel('NCO phase')
-endfor
+end
 
 %% на легенде указан период колебаний при переходном процессе
 legend(cellstr(num2str(Tn', 'Tn=%-d')))

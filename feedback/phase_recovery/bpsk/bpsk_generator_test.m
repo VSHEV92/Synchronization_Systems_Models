@@ -9,13 +9,13 @@ SNR = 6;
 
 %% -------------------------------------------------
 %% формирование созвездия BPSK
-[tx_bits, tx_samples] = bpsk_generator(
-    sample_time,            % шаг дискретизации
-    symbols_number,         % число передаваемых символов
-    samples_ber_symbol,     % число отсчетов на символ
-    freq_offset,            % расстройка по несущей частоте (рад/c)
-    phase_offset,           % расстройка по фазе (градусы)
-    SNR                     % отношение сигнал/шум (Eb/N0)
+[tx_bits, tx_samples] = bpsk_generator(...
+    sample_time,...            % шаг дискретизации
+    symbols_number,...         % число передаваемых символов
+    samples_ber_symbol,...     % число отсчетов на символ
+    freq_offset,...            % расстройка по несущей частоте (рад/c)
+    phase_offset,...           % расстройка по фазе (градусы)
+    SNR...                     % отношение сигнал/шум (Eb/N0)
 );
 
 figure(1)
@@ -37,13 +37,13 @@ SNR_list = 0:0.5:10;
 
 for SNR = SNR_list
     % формирование данных
-    [tx_bits, tx_samples] = bpsk_generator(
-        sample_time,            % шаг дискретизации
-        symbols_number,         % число передаваемых символов
-        samples_ber_symbol,     % число отсчетов на символ
-        freq_offset,            % расстройка по несущей частоте (рад/c)
-        phase_offset,           % расстройка по фазе (градусы)
-        SNR                     % отношение сигнал/шум (Eb/N0)
+    [tx_bits, tx_samples] = bpsk_generator(...
+        sample_time,...            % шаг дискретизации
+        symbols_number,...         % число передаваемых символов
+        samples_ber_symbol,...     % число отсчетов на символ
+        freq_offset,...            % расстройка по несущей частоте (рад/c)
+        phase_offset,...           % расстройка по фазе (градусы)
+        SNR...                     % отношение сигнал/шум (Eb/N0)
     );
 
     % демодуляция данных

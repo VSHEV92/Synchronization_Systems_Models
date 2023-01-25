@@ -60,7 +60,7 @@ input_phase = zeros(1,Nsamp);
 input_phase(1) = phase0_s;
 for k = 2:Nsamp
     input_phase(k) = input_phase(k-1) + Ts * input_w(k-1);
-endfor
+end
 
 %% --------------------------------------------------------------------------
 %% моделирование работы фапч
@@ -86,7 +86,7 @@ for n = 2:Nsamp
 
     % вычисление фазы NCO
     nco_phase(n) = nco_phase(n-1) + loop_filter_out(n); 
-endfor
+end
 
 %% ----------------------------------------------------
 %% вывод рассчетных значений

@@ -29,7 +29,7 @@ sampleStepTime = round(stepTime/Ts);  % номер отсчета, когда п
 indata = zeros(1, Nsamp);
 for k = sampleStepTime:Nsamp
     indata(k) = indata(k-1) + delta_w * Ts;
-endfor
+end
 
 %% ошибка по фазе, выход фильтра и фаза NCO
 err = zeros(1, Nsamp);
@@ -53,7 +53,7 @@ for n = 2:Nsamp
 
     % вычисление фазы NCO
     nco_phase(n) = nco_phase(n-1) + loop_filter_out(n); 
-endfor
+end
 
 plot(Time, err); grid on;
 xlabel('time'); ylabel('phase error')

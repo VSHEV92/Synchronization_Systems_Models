@@ -42,7 +42,7 @@ for n = 2:Nsamp
 
     % вычисление фазы NCO
     nco_phase(n) = nco_phase(n-1) + loop_filter_out(n); 
-endfor
+end
 
 %% дисперсия фазовой ошибки
 sim_var = var(nco_phase)
